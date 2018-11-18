@@ -17,7 +17,7 @@ error_results = [];
 %for h= 2.^(-(2:5)) 
 %N = 1/h;
 h= 1/N;
-x = 0:h:(1-h);  x = x';
+x = linspace(0,1,N);  x = x';
 e = ones(size(x));
 
 %% initial condition
@@ -37,24 +37,13 @@ k = 0.25*h^2;
 numsteps = ceil(Tf/k);
 k = Tf/numsteps;
 %% u_exact = @(x,t) exp(-a^2*pi^2*t)*sin(a*pi*x)
-u_exact = @(x,t) exp(-4*pi^2*t)*sin(2*pi*x);
+u_exact = sin(pi*x);
+f= (-1-pi^2)*sin(pi*x);
 
-u = u0;
-for n=1:numsteps
-  unew = u + k*(L*u);
-  u = unew;
-%%  clf;
-%%  if (mod(n, 25) == 0 || n == numsteps)  % plot every 25 steps
-%%    plot(x, u0, 'r-')
-%%    hold on
-%%    plot(x, u, 'bx-')
-%%    title(['n=' num2str(n) ', t=' num2str(k*n)])
-%%    xlabel('x'); ylabel('u')
-%%    drawnow
+u_approx = f \ (L-eye);
 
-end
  h_results = [h_results h];
- error_results = [error_results norm(u - u_exact(x, numsteps*k), inf)];
+ error_results = [error_results norm(u_approx - u_exact, inf)];
  
 end
 %%
